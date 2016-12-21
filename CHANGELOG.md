@@ -1,5 +1,9 @@
 # Change log
 
+### vNext
+
+Remove a circular dependency
+
 ### v1.1.2
 
 Remove dependency on lodash completely, so this package now has zero runtime dependencies. Nice!
