@@ -361,6 +361,61 @@ describe('graphql anywhere', () => {
     });
   });
 
+  it('can resolve fragments with array fields', () => {
+    const resolver = (fieldName, root) => {
+      return root[fieldName];
+    };
+
+    const query = gql`
+      {
+        ...on Droid {
+          episodes {
+            name
+          }
+        }
+        ...on Human {
+          episodes {
+            name
+            year
+            ship {
+              name
+            }
+          }
+        }
+      }
+    `;
+
+    const result: any = {
+      id: 'human@123',
+      episodes: [
+        {
+          id: 'episode@123',
+          name: 'Rogue One',
+          year: 2016,
+          ship: {
+            id: 'ship@123',
+            name: 'U-Wing',
+          },
+        },
+      ],
+    };
+
+    const queryResult = graphql(resolver, query, result);
+
+    // no "id" fields
+    assert.deepEqual(queryResult, {
+      episodes: [
+        {
+          name: 'Rogue One',
+          year: 2016,
+          ship: {
+            name: 'U-Wing',
+          },
+        },
+      ],
+    });
+  });
+
   it('readme example', () => {
     // I don't need all this stuff!
     const gitHubAPIResponse = {
